@@ -5,33 +5,42 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
 	public float speed = 5f;
-	public float rspeed = 90f;
-	Rigidbody rb;
-	public GameObject bullet;
+	public float rspeed = 200f;
+	public float bulletSpeed = 10f;
+	
+	public bool shoot = false;
+	public GameObject Bullet;
+	public Transform bulletpos;
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		rb = GetComponent<Rigidbody>();
-	}
 
-	// Update is called once per frame
 	void Update()
 	{
 		float xInput = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-
 		float yInput = Input.GetAxis("Vertical") * speed * Time.deltaTime;
 
-		float zInput = Input.GetAxis("Jump") * rspeed * Time.deltaTime;
-
-		transform.Rotate(0, zInput, 0);
-
+		
 		transform.Translate(xInput, 0, yInput);
 
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetButtonDown("Fire1"))
 		{
-			Instantiate(bullet, transform.position, Quaternion.identity);
+			shoot = true;
+		}
 
+	}
+
+	void Shoot()
+	{
+		GameObject bulletSpawn = Instantiate(Bullet, bulletpos.position, Bullet.transform.rotation);
+
+		bulletSpawn.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, bulletSpeed);
+	}
+
+	void FixedUpdate()
+	{
+		if (shoot)
+		{
+			Shoot();
+			shoot = false;
 		}
 	}
 
